@@ -14,15 +14,15 @@
 
 # Instructions:
 1. Use this Board: ESP32 Dev Module
-1.1.  Partition Scheme: Default 4MB with spiffs
-1.2.  Other defaults are OK
+ - Partition Scheme: Default 4MB with spiffs
+ - Other defaults are OK
 2. Actual board used for testing: Clone of DOIT ESP32 DEVKIT V1
 
 # Tutorial on how to load SPI Flash File System (SPIFFS):
 1. https://microcontrollerslab.com/install-esp32-filesystem-uploader-in-arduino-ide-spiffs/
 2. https://github.com/etherfi/arduino-esp32fs-plugin-esp32s2
  
-#Some errors corrected from the example code:
+# Some errors corrected from the example code:
 1. The HTML header was fixed. I think it was a copy-paste error.
 2. The function template_processor() needs to return a default value.
 3. The SPIFFS filenames need to match lowercase/uppercase exactly.
