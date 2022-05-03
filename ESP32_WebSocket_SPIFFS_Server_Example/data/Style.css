@@ -3,11 +3,11 @@
     text-align: center;
   }
   h1 {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     color: white;
   }
   h2{
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: bold;
     color: #612b78;
   }
@@ -19,13 +19,13 @@
     margin: 0;
   }
   .content {
-    padding: 30px;
+    padding: 10px;
     max-width: 600px;
     margin: 0 auto; 
   }
   .button {
-    padding: 15px 50px;
-    font-size: 24px;
+    padding: 10px 20px;
+    font-size: 18px;
     text-align: center;
     outline: none;
     color: #fff;
@@ -45,7 +45,7 @@
      transform: translateY(2px);
    }
    .state {
-     font-size: 1.5rem;
+     font-size: 1.25rem;
      color:#120707;
      font-weight: bold;
    }
