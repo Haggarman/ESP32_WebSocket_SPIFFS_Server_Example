@@ -92,6 +92,7 @@ void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 }
 
 String template_processor(const String& var){
+  //this is mainly so that the first static page load contains the current values
   Serial.println(var);
   
   if(var == "STATE12"){
@@ -116,6 +117,10 @@ void http_get_callback(AsyncWebServerRequest *request) {
   request->send(SPIFFS, "/Page.html", "text/html", false, template_processor);
 }
 
+void http_not_found(AsyncWebServerRequest *request) {
+  request->send(404, "text/plain", "Not found");
+}
+
 void initWebSocketServer() {
   // attach AsyncWebSocket
   ws.onEvent(onEvent);
@@ -132,6 +137,8 @@ void initWebSocketServer() {
   server.on("/", HTTP_GET, http_get_callback);
 
   server.serveStatic("/", SPIFFS, "/");
+
+  server.onNotFound(http_not_found);
 
   // Start server after attaching handlers.
   server.begin();
