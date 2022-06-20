@@ -36,13 +36,17 @@
 const char* ssid = SECRET_SSID;
 const char* password = SECRET_PASS;
 
-const int Pin_GreenLed = 12;
-const int Pin_RedLed = 13;
-const int Pin_BlueLed = 14;
+const int Pin_GreenLED = 12;
+const int Pin_RedLED = 13;
+const int Pin_BlueLED = 14;
 
-bool GPIO12_State = 1;  //Green LED will turn on when setup has completed okay.
-bool GPIO13_State = 0;
-bool GPIO14_State = 0;
+const char* PinText_GreenLED = "12";
+const char* PinText_RedLED = "13";
+const char* PinText_BlueLED = "14";
+
+bool State_GreenLED = 1;  //Green LED will turn on when setup has completed okay.
+bool State_RedLED = 0;
+bool State_BlueLED = 0;
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -57,18 +61,18 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
   AwsFrameInfo *info = (AwsFrameInfo*)arg;
   if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
     data[len] = 0;
-    if (strcmp((char*)data, "toggle12") == 0) {
-      GPIO12_State = !GPIO12_State;
+    if (strcmp((char*)data, "toggle_green") == 0) {
+      State_GreenLED = !State_GreenLED;
       //notifyClients();
-      ws.textAll(String("GPIO12=") + String(GPIO12_State));
+      ws.textAll(String("led_green=") + String(State_GreenLED));
     }
-    if (strcmp((char*)data, "toggle13") == 0) {
-      GPIO13_State = !GPIO13_State;
-      ws.textAll(String("GPIO13=") + String(GPIO13_State));
+    else if (strcmp((char*)data, "toggle_red") == 0) {
+      State_RedLED = !State_RedLED;
+      ws.textAll(String("led_red=") + String(State_RedLED));
     }
-    if (strcmp((char*)data, "toggle14") == 0) {
-      GPIO14_State = !GPIO14_State;
-      ws.textAll(String("GPIO14=") + String(GPIO14_State));
+    else if (strcmp((char*)data, "toggle_blue") == 0) {
+      State_BlueLED = !State_BlueLED;
+      ws.textAll(String("led_blue=") + String(State_BlueLED));
     }
   }
 }
@@ -95,19 +99,30 @@ String template_processor(const String& var){
   //this is mainly so that the first static page load contains the current values
   Serial.println(var);
   
-  if(var == "STATE12"){
-    //encountered %STATE12% in the html file.
-    if (GPIO12_State) {return "ON";} else {return "OFF";}
+  if(var == "STATE_GREEN_LED"){
+    //encountered %STATE_GREEN_LED% in the html file.
+    if (State_GreenLED) {return "ON";} else {return "OFF";}
   }
-
-  if(var == "STATE13"){
-    if (GPIO13_State) {return "ON";} else {return "OFF";}
+  
+  else if(var == "STATE_RED_LED"){
+    if (State_RedLED) {return "ON";} else {return "OFF";}
   }
-
-  if(var == "STATE14"){
-    if (GPIO14_State) {return "ON";} else {return "OFF";}
+  
+  else if(var == "STATE_BLUE_LED"){
+    if (State_BlueLED) {return "ON";} else {return "OFF";}
   }
-
+  
+  else if(var == "PIN_GREEN_LED"){
+    return PinText_GreenLED;
+  }
+  
+  else if(var == "PIN_RED_LED"){
+    return PinText_RedLED;
+  }
+  
+  else if(var == "PIN_BLUE_LED"){
+    return PinText_BlueLED;
+  }
   //by default just give back the unhandled template variable unaltered so that debugging is easier.
   return var;
 }
@@ -129,7 +144,7 @@ void initWebSocketServer() {
   // callback route for root / web page
   //example: server.on(endpoint, HTTP_###, callback);   //GET, PUT, etc
   //
-  //This wasted a day of my life: rewrite to avoid anonymous function declaration [](){}
+  //Rewrite to avoid anonymous function declaration [](){}
   // If a normal callback fucntion can solve this, this is not a reason to be clever!
   //server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
   //  request->send(SPIFFS, "/Page.html", "text/html", false, template_processor);
@@ -154,17 +169,17 @@ void setup(){
    Serial.println("SPIFFS mounted successfully");
   }
 
-  pinMode(Pin_GreenLed, OUTPUT);
-  pinMode(Pin_RedLed, OUTPUT);
-  pinMode(Pin_BlueLed, OUTPUT);
+  pinMode(Pin_GreenLED, OUTPUT);
+  pinMode(Pin_RedLED, OUTPUT);
+  pinMode(Pin_BlueLED, OUTPUT);
 
-  digitalWrite(Pin_BlueLed, HIGH);      //start with BLUE, this will only be seen briefly if at all.
+  digitalWrite(Pin_BlueLED, HIGH);      //start with BLUE, this will only be seen briefly if at all.
 
   // Connect to Wi-Fi
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     Serial.println("Connecting to WiFi..");
-    digitalWrite(Pin_RedLed, HIGH);     //Turn on the red LED also to show MAGENTA, indicating retries.
+    digitalWrite(Pin_RedLED, HIGH);     //Turn on the red LED also to show MAGENTA, indicating retries.
     delay(1024);
   }
 
@@ -180,9 +195,9 @@ unsigned long updateInterval = 10000;    // how fast to update (ms)
 
 void loop() {
   ws.cleanupClients();
-  digitalWrite(Pin_GreenLed, GPIO12_State);
-  digitalWrite(Pin_RedLed, GPIO13_State);
-  digitalWrite(Pin_BlueLed, GPIO14_State);
+  digitalWrite(Pin_GreenLED, State_GreenLED);
+  digitalWrite(Pin_RedLED, State_RedLED);
+  digitalWrite(Pin_BlueLED, State_BlueLED);
 
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= updateInterval) {

@@ -17,28 +17,31 @@
   }
   function onMessage(event) {
     //var state
-    if (event.data == "GPIO12=1"){ document.getElementById('state12').innerHTML = "ON"; document.getElementById('button12').style.backgroundColor = "#00CC00"; }
-    if (event.data == "GPIO13=1"){ document.getElementById('state13').innerHTML = "ON"; document.getElementById('button13').style.backgroundColor = "#CC0000"; }
-    if (event.data == "GPIO14=1"){ document.getElementById('state14').innerHTML = "ON"; document.getElementById('button14').style.backgroundColor = "#0000CC"; }
-    if (event.data == "GPIO12=0"){ document.getElementById('state12').innerHTML = "OFF"; document.getElementById('button12').style.backgroundColor = "#888888"; }
-    if (event.data == "GPIO13=0"){ document.getElementById('state13').innerHTML = "OFF"; document.getElementById('button13').style.backgroundColor = "#888888"; }
-    if (event.data == "GPIO14=0"){ document.getElementById('state14').innerHTML = "OFF"; document.getElementById('button14').style.backgroundColor = "#888888"; }
+    if (event.data == "led_green=1"){ document.getElementById('text_green').innerHTML = "ON"; document.getElementById('button_green').style.backgroundColor = "#00CC00"; }
+    if (event.data == "led_red=1"){ document.getElementById('text_red').innerHTML = "ON"; document.getElementById('button_red').style.backgroundColor = "#CC0000"; }
+    if (event.data == "led_blue=1"){ document.getElementById('text_blue').innerHTML = "ON"; document.getElementById('button_blue').style.backgroundColor = "#0000CC"; }
+    if (event.data == "led_green=0"){ document.getElementById('text_green').innerHTML = "OFF"; document.getElementById('button_green').style.backgroundColor = "#888888"; }
+    if (event.data == "led_red=0"){ document.getElementById('text_red').innerHTML = "OFF"; document.getElementById('button_red').style.backgroundColor = "#888888"; }
+    if (event.data == "led_blue=0"){ document.getElementById('text_blue').innerHTML = "OFF"; document.getElementById('button_blue').style.backgroundColor = "#888888"; }
   }
   function onLoad(event) {
     initWebSocket();
     initButtons();
   }
   function initButtons() {
-    document.getElementById('button12').addEventListener('click', toggle12);
-    document.getElementById('button13').addEventListener('click', toggle13);
-    document.getElementById('button14').addEventListener('click', toggle14);
+    if (document.getElementById('text_red').innerHTML == "ON") { document.getElementById('button_red').style.backgroundColor = "#CC0000"; }
+    if (document.getElementById('text_green').innerHTML == "ON") { document.getElementById('button_green').style.backgroundColor = "#00CC00"; }
+    if (document.getElementById('text_blue').innerHTML == "ON") { document.getElementById('button_blue').style.backgroundColor = "#0000CC"; }
+    document.getElementById('button_red').addEventListener('click', fn_toggle_red);
+    document.getElementById('button_green').addEventListener('click', fn_toggle_green);
+    document.getElementById('button_blue').addEventListener('click', fn_toggle_blue);
   }
-  function toggle12(){
-    websocket.send('toggle12');
+  function fn_toggle_red(){
+    websocket.send('toggle_red');
   }
-  function toggle13(){
-    websocket.send('toggle13');
+  function fn_toggle_green(){
+    websocket.send('toggle_green');
   }
-  function toggle14(){
-    websocket.send('toggle14');
+  function fn_toggle_blue(){
+    websocket.send('toggle_blue');
   }
